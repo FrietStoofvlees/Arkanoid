@@ -1,0 +1,23 @@
+﻿<Window x:Class="Arkanoid.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Arkanoid"
+        mc:Ignorable="d"
+        Title="Arkanoid" ResizeMode="NoResize" SizeToContent="WidthAndHeight" KeyDown="Window_KeyDown">
+    <Grid MinHeight="450" MinWidth="800" MaxHeight="450" MaxWidth="800">
+        <Label Content="Score:" HorizontalAlignment="Left" Margin="50,2,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblScore" Content="00000" HorizontalAlignment="Left" Margin="100,2,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnMenu" Content="Menu" Margin="325,5,405,425" Width="70" Height="20" FontWeight="Black"/>
+        <Button x:Name="btnReset" Content="Reset" Margin="405,5,325,425" Width="70" Height="20" FontWeight="Black" Click="BtnReset_Click"/>
+        <Label Content="Best Score:" HorizontalAlignment="Right" Margin="0,2,100,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblBestScore" Content="00000" HorizontalAlignment="Right" Margin="0,2,50,0" VerticalAlignment="Top"/>
+        
+        <Border BorderBrush="Black" BorderThickness="2.5" Margin="10,30,10,10"/>
+        <Canvas x:Name="gameCanvas" Margin="15,35,15,15" Background="LavenderBlush" Focusable="True" FocusVisualStyle="{x:Null}"/>
+
+
+
+    </Grid>
+</Window>
