@@ -15,7 +15,7 @@ namespace Arkanoid
     {
         private int speed = 10;
 
-		public Slider(double x, double y, double width, double height) : base(x, y, width, height)
+		public Slider(double x, double y, double width, double height) : base(x, y, width, height, Colors.Black)
 		{
             rect.RadiusX = 5;
             rect.RadiusY = 5;

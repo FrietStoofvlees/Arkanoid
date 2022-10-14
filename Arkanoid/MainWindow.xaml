@@ -13,9 +13,18 @@
         <Button x:Name="btnReset" Content="Reset" Margin="405,5,325,425" Width="70" Height="20" FontWeight="Black" Click="BtnReset_Click"/>
         <Label Content="Best Score:" HorizontalAlignment="Right" Margin="0,2,100,0" VerticalAlignment="Top"/>
         <Label x:Name="lblBestScore" Content="00000" HorizontalAlignment="Right" Margin="0,2,50,0" VerticalAlignment="Top"/>
-        
-        <Border BorderBrush="Black" BorderThickness="2.5" Margin="10,30,10,10"/>
+
         <Canvas x:Name="gameCanvas" Margin="15,35,15,15" Background="LavenderBlush" Focusable="True" FocusVisualStyle="{x:Null}"/>
+        <Rectangle x:Name="deathZone" Margin="10,410,10,10">
+            <Rectangle.Fill>
+                <LinearGradientBrush EndPoint="0.5,1.0" StartPoint="0.5,0.1">
+                    <GradientStop Color="LavenderBlush"/>
+                    <GradientStop Color="#FFFF3232" Offset="1"/>
+                </LinearGradientBrush>
+
+            </Rectangle.Fill>
+        </Rectangle>
+        <Border BorderBrush="Black" BorderThickness="2.5" Margin="10,30,10,10"/>
 
 
 

@@ -53,7 +53,7 @@ namespace Arkanoid
             return ball;
         }
 
-        internal void Move(Canvas canvas, Sprite sprite)
+        internal void Move(Canvas canvas, List<Sprite> sprites)
         {
             if (X + (2 * Radius) >= canvas.ActualWidth || X <= 0)
             {
@@ -68,7 +68,13 @@ namespace Arkanoid
             X -= vx;
             Y -= vy;
 
-            HasHit(sprite);
+            foreach (Sprite sprite in sprites)
+            {
+                if (sprite is Block b)
+                {
+                    HasHit(b);
+                }
+            }
 
             UpdateElement();
         }
@@ -82,18 +88,26 @@ namespace Arkanoid
 
         internal void HasHit(Sprite sprite)
         {
-            int Xc = (int)(X + Radius);
-            int Yc = (int)(Y + Radius);
-            int Xn = (int)Math.Max(sprite.X, Math.Min(Xc, sprite.X + sprite.Width));
-            int Yn = (int)Math.Max(sprite.Y, Math.Min(Yc, sprite.Y + sprite.Height));
+            //if (sprite.X == X + Width && sprite.Y >= Y + Radius)
+            //{
+            //    vx *= -1;
+            //}
+            //else
+            //{
+                int Xc = (int)(X + Radius);
+                int Yc = (int)(Y + Radius);
+                int Xn = (int)Math.Max(sprite.X, Math.Min(Xc, sprite.X + sprite.Width));
+                int Yn = (int)Math.Max(sprite.Y, Math.Min(Yc, sprite.Y + sprite.Height));
 
-            int Dx = Xn - Xc;
-            int Dy = Yn - Yc;
+                int Dx = Xn - Xc;
+                int Dy = Yn - Yc;
 
-            if (Dx * Dx + Dy * Dy <= Math.Pow(Radius, 2))
-            {
-                vy *= -1;
-            }
+                if (Dx * Dx + Dy * Dy <= Math.Pow(Radius, 2))
+                {
+                    vy *= -1;
+                }
+            //}
+            
 
             //if ((X + Width >= sprite.X && X + Width <= sprite.X + sprite.Width) && (Y + Height >= sprite.Y && Y + Height <= sprite.Y + sprite.Height)) vx *= -1;
         }

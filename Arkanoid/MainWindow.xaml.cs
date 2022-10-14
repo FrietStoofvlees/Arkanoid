@@ -32,7 +32,8 @@ namespace Arkanoid
         private readonly int canvasWidth = 770;
         private readonly int canvasHeight = 400;
         private readonly int blockWidth = 50;
-        private readonly int blockHeight = 10;
+        private readonly int blockHeight = 15;
+        private readonly double blockSpacing = 2.5;
         private readonly int nBlocks = 13;
         private readonly double radius = 10;
 
@@ -48,7 +49,7 @@ namespace Arkanoid
             {
                 if (ball != null && slider != null)
                 {
-                    ball.Move(gameCanvas, slider);
+                    ball.Move(gameCanvas, sprites);
                 }
                 //else
                 //{
@@ -105,9 +106,11 @@ namespace Arkanoid
             
             for (int i = 0; i < nBlocks; i++)
             {
-                 
-                Block block = new(x: startPos + (blockWidth * i) + (1 * i), blockHeight, blockWidth, blockHeight);
-                sprites.Add(block);
+                for (int j = 0; j < 4; j++)
+                {
+                    Block block = new(x: startPos + (blockWidth * i) + (blockSpacing * i), blockHeight + (blockHeight * j) + (blockSpacing * j) , blockWidth, blockHeight, Colors.Red);
+                    sprites.Add(block);
+                }
             }
             // --
 

@@ -13,7 +13,7 @@ namespace Arkanoid
     internal class Block : Sprite
     {
         protected Rectangle rect;
-        public Block(double x, double y, double width, double height)
+        public Block(double x, double y, double width, double height, Color color)
         {
             Width = width;
             Height = height;
@@ -25,7 +25,8 @@ namespace Arkanoid
                 Width = Width,
                 Height = Height,
                 Stroke = new SolidColorBrush(Colors.Black),
-                Fill = new SolidColorBrush(Colors.Black),
+                StrokeThickness = 3.5,
+                Fill = new SolidColorBrush(color),
                 Margin = new Thickness(X, Y, 0, 0),
             };
         }
