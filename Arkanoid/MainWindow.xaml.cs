@@ -25,10 +25,9 @@ namespace Arkanoid
         private Ball ball;
         private Slider slider;
         private DispatcherTimer gameTimer;
-        private List<Sprite> sprites = new List<Sprite>();
+        private readonly List<Sprite> sprites = new();
 
         private bool isPlaying;
-
         private readonly int canvasWidth = 770;
         private readonly int canvasHeight = 400;
         private readonly int blockWidth = 50;
@@ -36,6 +35,7 @@ namespace Arkanoid
         private readonly double blockSpacing = 2.5;
         private readonly int nBlocks = 13;
         private readonly double radius = 10;
+        private int lifes = 1;
 
         public MainWindow()
         {
@@ -47,7 +47,13 @@ namespace Arkanoid
         {
             if (isPlaying)
             {
-                if (ball != null && slider != null)
+                if (CheckBall())
+                {
+                    GameOver();
+                    ShowElements();
+
+                }
+                else if (ball != null && slider != null)
                 {
                     ball.Move(gameCanvas, sprites);
                 }
@@ -90,42 +96,89 @@ namespace Arkanoid
             NewGame();
         }
 
+        private bool CheckBall()
+        {
+            if (ball.Y + ball.Height/2 >= canvasHeight-deathZone.ActualHeight)
+            {
+                ball.IsDeath = true;
+            }
+            return ball.IsDeath;
+        }
+
+        private void CreateElements()
+        {
+            sprites.Clear();
+
+            ball = new Ball(x: canvasWidth / 2 - radius, y: canvasHeight * 2 / 3 - radius, radius: radius);
+            slider = new Slider(x: canvasWidth / 2 - blockWidth / 2, y: canvasHeight * 3 / 4, width: blockWidth, height: 7.5);
+
+            sprites.AddRange(collection: new List<Sprite> { ball, slider });
+
+            // TODO: add Method from arkanoidLevels.cs to create level
+            int startPos = ((canvasWidth - (nBlocks * blockWidth)) / 2) - (nBlocks - 1);
+
+            for (int i = 0; i < nBlocks; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    Block block = new(x: startPos + (blockWidth * i) + (blockSpacing * i), y: blockHeight + (blockHeight * j) + (blockSpacing * j), width: blockWidth, height: blockHeight, color: Colors.Red);
+                    sprites.Add(block);
+                }
+            }
+        }
+        private void CreateElements(string s)
+        {
+            switch (s)
+            {
+                case "ball":
+                    if (ball != null)
+                    {
+                        sprites.Remove(ball);
+                    }
+                    ball = new Ball(x: canvasWidth / 2 - radius, y: canvasHeight * 2 / 3 - radius, radius: radius);
+                    sprites.Add(ball);
+                    break;
+                case "slider":
+                    slider = new Slider(x: canvasWidth / 2 - blockWidth / 2, y: canvasHeight * 3 / 4, width: blockWidth, height: 7.5);
+                    break;
+            }
+        }
+
         private void NewGame()
         {
             isPlaying = false;
-            sprites.Clear();
-            gameCanvas.Children.Clear();
+            CreateElements();
+            ShowElements();
 
             gameTimer = new DispatcherTimer(DispatcherPriority.Normal);
             gameTimer.Tick += GameTimer_Tick;
             gameTimer.Interval = TimeSpan.FromMilliseconds(25);
             gameTimer.Start();
 
-            // -- TODO: make method for levels, difficulty enum?
-            int startPos = ((canvasWidth - (nBlocks * blockWidth)) / 2) - (nBlocks - 1);
-            
-            for (int i = 0; i < nBlocks; i++)
+            gameCanvas.Focus();
+        }
+
+        private void GameOver()
+        {
+            if (ball.IsDeath)
             {
-                for (int j = 0; j < 4; j++)
+                lifes--;
+                if (lifes == 0)
                 {
-                    Block block = new(x: startPos + (blockWidth * i) + (blockSpacing * i), blockHeight + (blockHeight * j) + (blockSpacing * j) , blockWidth, blockHeight, Colors.Red);
-                    sprites.Add(block);
+                    NewGame();
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    CreateElements("ball");
                 }
             }
-            // --
-
-            ball = new Ball(canvasWidth / 2 - radius, canvasHeight * 2 / 3 - radius, radius);
-            slider = new Slider(canvasWidth / 2 - blockWidth / 2, canvasHeight * 3 / 4, blockWidth, 7.5);
-            sprites.AddRange(collection: new List<Sprite> { ball, slider });
-
-            ShowElements();
-
-            gameCanvas.Focus();
         }
 
         private void ShowElements()
         {
             gameCanvas.Children.Clear();
+            gameCanvas.Children.Add(deathZone);
 
             foreach (Sprite sprite in sprites)
             {

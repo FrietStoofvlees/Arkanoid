@@ -31,6 +31,7 @@ namespace Arkanoid
             
             Width = 2 * Radius;
             Height = Width;
+            IsDeath = false;
 
             ball = new Ellipse()
             {
@@ -44,9 +45,10 @@ namespace Arkanoid
             UpdateElement();
         }
 
-        public double Radius { get; set; }
-        public double Damage { get => damage; set => damage = value; }
         public double Bounce { get => bounce; set => bounce = value; }
+        public double Damage { get => damage; set => damage = value; }
+        public double Radius { get; set; }
+        public bool IsDeath { get; set; }
 
         public Ellipse GetBall()
         {
@@ -60,7 +62,7 @@ namespace Arkanoid
                 vx *= -1;
             }
 
-            if (Y + (2 * Radius) >= canvas.ActualHeight || Y <= 0)
+            else if (Y + (2 * Radius) >= canvas.ActualHeight || Y <= 0)
             {
                 vy *= -1;
             }
