@@ -14,9 +14,13 @@ namespace Arkanoid
     internal class Slider : Block
     {
         private int speed = 10;
+        private readonly double startX;
+        private readonly double startY;
 
 		public Slider(double x, double y, double width, double height) : base(x, y, width, height, Colors.Black)
 		{
+            startX = x;
+            startY = y;
             rect.RadiusX = 5;
             rect.RadiusY = 5;
 
@@ -30,13 +34,13 @@ namespace Arkanoid
             switch (e.Key)
             {
                 case Key.Left:
-                    if (X >= 0)
+                    if (X - Speed >= 0)
                     {
                         MoveLeft();
                     }
                     break;
                 case Key.Right:
-                    if (X <= ((int)canvas.ActualWidth - Width))
+                    if (X + Speed <= ((int)canvas.Width - Width))
                     {
                         MoveRight();
                     }
@@ -57,6 +61,13 @@ namespace Arkanoid
         private void MoveRight()
         {
             X += Speed;
+        }
+
+        internal override void Reset()
+        {
+            X = startX;
+            Y = startY;
+            UpdateElement();
         }
 
         internal override void UpdateElement()

@@ -15,10 +15,10 @@ namespace Arkanoid
         protected Rectangle rect;
         public Block(double x, double y, double width, double height, Color color)
         {
-            Width = width;
-            Height = height;
             X = x;
             Y = y;
+            Width = width;
+            Height = height;
 
             rect = new Rectangle
             {

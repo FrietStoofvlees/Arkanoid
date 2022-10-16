@@ -16,6 +16,7 @@ namespace Arkanoid
         public double Width { get; set; }
         public double Height { get; set; }
 
+        internal virtual void Reset() { }
         internal virtual void UpdateElement() { }
     }
 }

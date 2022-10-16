@@ -14,8 +14,8 @@
         <Label Content="Best Score:" HorizontalAlignment="Right" Margin="0,2,100,0" VerticalAlignment="Top"/>
         <Label x:Name="lblBestScore" Content="00000" HorizontalAlignment="Right" Margin="0,2,50,0" VerticalAlignment="Top"/>
 
-        <Canvas x:Name="gameCanvas" Margin="15,35,15,15" Background="LavenderBlush" Focusable="True" FocusVisualStyle="{x:Null}">
-            <Rectangle x:Name="deathZone" Height="30" Canvas.Top="375" Width="780" HorizontalAlignment="Left" VerticalAlignment="Center" Canvas.Left="-5" >
+        <Canvas x:Name="gameCanvas" Width="780" Height="410" Margin="10,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="LavenderBlush" Focusable="True" FocusVisualStyle="{x:Null}" ClipToBounds="true">
+            <Rectangle x:Name="deathZone" Height="30" Canvas.Top="380" Width="780" HorizontalAlignment="Center" VerticalAlignment="Top" >
                 <Rectangle.Fill>
                     <LinearGradientBrush EndPoint="0.5,1.0" StartPoint="0.5,0.1">
                         <GradientStop Color="LavenderBlush"/>

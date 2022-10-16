@@ -16,15 +16,19 @@ namespace Arkanoid
     internal class Ball : Sprite
     {
         private readonly Ellipse ball;
-        private double vx = 4.0;
+        private double vx = 0;
         private double vy = 4.0;
         private double damage = 1;
         private double bounce = 0.7;
+        private readonly double startX;
+        private readonly double startY;
 
         public Ball(double x, double y, double radius)
         {
             X = x;
             Y = y;
+            startX = x;
+            startY = y;
             Radius = radius;
             //X = canvas.ActualWidth / 2 - Radius;
             //Y = canvas.ActualHeight * 2 / 3 - Radius;
@@ -47,22 +51,56 @@ namespace Arkanoid
 
         public double Bounce { get => bounce; set => bounce = value; }
         public double Damage { get => damage; set => damage = value; }
-        public double Radius { get; set; }
         public bool IsDeath { get; set; }
+        public double Radius { get; set; }
 
         public Ellipse GetBall()
         {
             return ball;
         }
 
+        internal bool HasHit(Sprite sprite)
+        {
+            int Xc = (int)(X + Radius);
+            int Yc = (int)(Y + Radius);
+            int Xn = (int)Math.Max(sprite.X, Math.Min(Xc, sprite.X + sprite.Width));
+            int Yn = (int)Math.Max(sprite.Y, Math.Min(Yc, sprite.Y + sprite.Height));
+
+            int Dx = Xn - Xc;
+            int Dy = Yn - Yc;
+
+            if (Dx * Dx + Dy * Dy <= Math.Pow(Radius, 2))
+            {
+                if (vx == 0)
+                {
+                    vx = 4;
+                }
+                //TODO: fix hit detection on sides
+                //if (Y + Height > sprite.Y && Y + Radius / 2 < sprite.Y + sprite.Height)// && (X >= sprite.X-Width && X <= sprite.X+sprite.Width))
+                //{
+                //    vx *= -1;
+                //}
+                if (Dy == 0)
+                {
+                    vx *= -1;
+                }
+                else vy *= -1;
+
+                return true;
+            }
+            else return false;
+
+            //if ((X + Width >= sprite.X && X + Width <= sprite.X + sprite.Width) && (Y + Height >= sprite.Y && Y + Height <= sprite.Y + sprite.Height)) vx *= -1;
+        }
+
         internal void Move(Canvas canvas, List<Sprite> sprites)
         {
-            if (X + (2 * Radius) >= canvas.ActualWidth || X <= 0)
+            if (X + (2 * Radius) >= canvas.Width || X <= 0)
             {
                 vx *= -1;
             }
 
-            else if (Y + (2 * Radius) >= canvas.ActualHeight || Y <= 0)
+            else if (Y + (2 * Radius) >= canvas.Height || Y <= 0)
             {
                 vy *= -1;
             }
@@ -74,10 +112,20 @@ namespace Arkanoid
             {
                 if (sprite is Block b)
                 {
-                    HasHit(b);
+                    if (HasHit(b)) break;
                 }
             }
 
+            UpdateElement();
+        }
+
+        internal override void Reset()
+        {
+            vx = 0;
+            vy *= -1;
+            X = startX;
+            Y = startY;
+            IsDeath = false;
             UpdateElement();
         }
 
@@ -86,32 +134,6 @@ namespace Arkanoid
             ball.Margin = new Thickness(X, Y, 0, 0);
             ball.Width = Width;
             ball.Height = Height;
-        }
-
-        internal void HasHit(Sprite sprite)
-        {
-            //if (sprite.X == X + Width && sprite.Y >= Y + Radius)
-            //{
-            //    vx *= -1;
-            //}
-            //else
-            //{
-                int Xc = (int)(X + Radius);
-                int Yc = (int)(Y + Radius);
-                int Xn = (int)Math.Max(sprite.X, Math.Min(Xc, sprite.X + sprite.Width));
-                int Yn = (int)Math.Max(sprite.Y, Math.Min(Yc, sprite.Y + sprite.Height));
-
-                int Dx = Xn - Xc;
-                int Dy = Yn - Yc;
-
-                if (Dx * Dx + Dy * Dy <= Math.Pow(Radius, 2))
-                {
-                    vy *= -1;
-                }
-            //}
-            
-
-            //if ((X + Width >= sprite.X && X + Width <= sprite.X + sprite.Width) && (Y + Height >= sprite.Y && Y + Height <= sprite.Y + sprite.Height)) vx *= -1;
         }
     }
 }

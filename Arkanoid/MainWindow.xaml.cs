@@ -28,14 +28,12 @@ namespace Arkanoid
         private readonly List<Sprite> sprites = new();
 
         private bool isPlaying;
-        private readonly int canvasWidth = 770;
-        private readonly int canvasHeight = 400;
         private readonly int blockWidth = 50;
         private readonly int blockHeight = 15;
         private readonly double blockSpacing = 2.5;
         private readonly int nBlocks = 13;
         private readonly double radius = 10;
-        private int lifes = 1;
+        private int lifes = 2;
 
         public MainWindow()
         {
@@ -57,13 +55,6 @@ namespace Arkanoid
                 {
                     ball.Move(gameCanvas, sprites);
                 }
-                //else
-                //{
-                //    ball = new Ball(gameCanvas.ActualWidth / 2 - radius, gameCanvas.ActualHeight * 2 / 3 - radius, radius);
-                //    slider = new Slider(gameCanvas.ActualWidth / 2 - blockWidth / 2, gameCanvas.ActualHeight * 3 / 4, blockWidth, 7.5);
-                //    sprites.AddRange(collection: new List<Sprite> { ball, slider });
-                //    ShowElements();
-                //}
             }
             else
             {
@@ -80,6 +71,11 @@ namespace Arkanoid
                     case Key.Space:
                         isPlaying = true;
                         break;
+                    case Key.Left:
+                    case Key.Right:
+                        isPlaying = true;
+                        slider.Move(gameCanvas, e);
+                        break;
                     default:
                         break;
                 }
@@ -92,13 +88,13 @@ namespace Arkanoid
 
         private void BtnReset_Click(object sender, RoutedEventArgs e)
         {
-            gameTimer.Stop();
+            //gameTimer.Stop();
             NewGame();
         }
 
         private bool CheckBall()
         {
-            if (ball.Y + ball.Height/2 >= canvasHeight-deathZone.ActualHeight)
+            if (ball.Y + ball.Radius >= gameCanvas.Height-deathZone.ActualHeight)
             {
                 ball.IsDeath = true;
             }
@@ -109,13 +105,8 @@ namespace Arkanoid
         {
             sprites.Clear();
 
-            ball = new Ball(x: canvasWidth / 2 - radius, y: canvasHeight * 2 / 3 - radius, radius: radius);
-            slider = new Slider(x: canvasWidth / 2 - blockWidth / 2, y: canvasHeight * 3 / 4, width: blockWidth, height: 7.5);
-
-            sprites.AddRange(collection: new List<Sprite> { ball, slider });
-
             // TODO: add Method from arkanoidLevels.cs to create level
-            int startPos = ((canvasWidth - (nBlocks * blockWidth)) / 2) - (nBlocks - 1);
+            int startPos = (((int)gameCanvas.Width - (nBlocks * blockWidth)) / 2) - (nBlocks - 1);
 
             for (int i = 0; i < nBlocks; i++)
             {
@@ -125,23 +116,11 @@ namespace Arkanoid
                     sprites.Add(block);
                 }
             }
-        }
-        private void CreateElements(string s)
-        {
-            switch (s)
-            {
-                case "ball":
-                    if (ball != null)
-                    {
-                        sprites.Remove(ball);
-                    }
-                    ball = new Ball(x: canvasWidth / 2 - radius, y: canvasHeight * 2 / 3 - radius, radius: radius);
-                    sprites.Add(ball);
-                    break;
-                case "slider":
-                    slider = new Slider(x: canvasWidth / 2 - blockWidth / 2, y: canvasHeight * 3 / 4, width: blockWidth, height: 7.5);
-                    break;
-            }
+
+            ball = new Ball(x: gameCanvas.Width / 2 - radius, y: gameCanvas.Height * 2 / 3 - radius, radius: radius);
+            slider = new Slider(x: gameCanvas.Width / 2 - blockWidth / 2, y: gameCanvas.Height * 0.85, width: blockWidth, height: 7.5);
+
+            sprites.AddRange(collection: new List<Sprite> { ball, slider });
         }
 
         private void NewGame()
@@ -150,11 +129,13 @@ namespace Arkanoid
             CreateElements();
             ShowElements();
 
-            gameTimer = new DispatcherTimer(DispatcherPriority.Normal);
-            gameTimer.Tick += GameTimer_Tick;
-            gameTimer.Interval = TimeSpan.FromMilliseconds(25);
+            if (gameTimer == null)
+            {
+                gameTimer = new DispatcherTimer(DispatcherPriority.Normal);
+                gameTimer.Tick += GameTimer_Tick;
+                gameTimer.Interval = TimeSpan.FromMilliseconds(25);
+            }
             gameTimer.Start();
-
             gameCanvas.Focus();
         }
 
@@ -162,15 +143,17 @@ namespace Arkanoid
         {
             if (ball.IsDeath)
             {
+                isPlaying = false;
                 lifes--;
+
                 if (lifes == 0)
                 {
-                    NewGame();
-                    Environment.Exit(0);
+                    //NewGame(); // TODO: End game
                 }
                 else
                 {
-                    CreateElements("ball");
+                    slider.Reset();
+                    ball.Reset();
                 }
             }
         }
