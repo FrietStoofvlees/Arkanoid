@@ -34,6 +34,7 @@ namespace Arkanoid
         private readonly int nBlocks = 13;
         private readonly double radius = 10;
         private int lifes = 2;
+        private int score = 0;
 
         public MainWindow()
         {
@@ -49,11 +50,31 @@ namespace Arkanoid
                 {
                     GameOver();
                     ShowElements();
-
                 }
                 else if (ball != null && slider != null)
                 {
-                    ball.Move(gameCanvas, sprites);
+                    ball.Move(gameCanvas);
+
+                    foreach (Sprite s in sprites)
+                    {
+                        if (s is Ball) continue;
+                        else if (s is Slider sl)
+                        {
+                            ball.HasHit(sl);
+                            break;
+                        }
+                        else if (s is Block bl && ball.HasHit(bl))
+                        {
+                            if (bl.IsBroken(ball.Damage))
+                            {
+                                AddScore(bl.Bonus);
+                                RemoveElement(bl);
+                                break;
+                            }
+                            AddScore(bl.Score);
+                            break;
+                        }
+                    }
                 }
             }
             else
@@ -158,22 +179,45 @@ namespace Arkanoid
             }
         }
 
+        private void RemoveElement(Ball b)
+        {
+            sprites.Remove(b);
+            gameCanvas.Children.Remove(b.GetBall());
+        }
+
+        private void RemoveElement(Block bl)
+        {
+            sprites.Remove(bl);
+            gameCanvas.Children.Remove(bl.GetBlock());
+        }
+
         private void ShowElements()
         {
             gameCanvas.Children.Clear();
             gameCanvas.Children.Add(deathZone);
 
-            foreach (Sprite sprite in sprites)
+            foreach (Sprite s in sprites)
             {
-                if (sprite is Ball b)
+                if (s is Ball b)
                 {
                     gameCanvas.Children.Add(b.GetBall());
                 }
-                else if (sprite is Block bl)
+                else if (s is Block bl)
                 {
                     gameCanvas.Children.Add(bl.GetBlock());
                 }
             }
+        }
+
+        private void AddScore(int score)
+        {
+            this.score += score;
+            SetScores();
+        }
+
+        private void SetScores()
+        {
+            lblScore.Content = Convert.ToString(score);
         }
     }
 }

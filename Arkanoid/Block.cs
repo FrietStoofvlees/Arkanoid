@@ -13,6 +13,9 @@ namespace Arkanoid
     internal class Block : Sprite
     {
         protected Rectangle rect;
+
+        private int health = 1;
+
         public Block(double x, double y, double width, double height, Color color)
         {
             X = x;
@@ -34,6 +37,18 @@ namespace Arkanoid
         public Rectangle GetBlock()
         {
             return rect;
+        }
+        public int Bonus { get; } = 50;
+        public int Score { get; } = 10;
+
+        internal bool IsBroken(int damage)
+        {
+            health -= damage;
+            if (health <= 0)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

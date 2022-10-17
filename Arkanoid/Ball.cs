@@ -18,7 +18,7 @@ namespace Arkanoid
         private readonly Ellipse ball;
         private double vx = 0;
         private double vy = 4.0;
-        private double damage = 1;
+        private int damage = 1;
         private double bounce = 0.7;
         private readonly double startX;
         private readonly double startY;
@@ -50,7 +50,7 @@ namespace Arkanoid
         }
 
         public double Bounce { get => bounce; set => bounce = value; }
-        public double Damage { get => damage; set => damage = value; }
+        public int Damage { get => damage; set => damage = value; }
         public bool IsDeath { get; set; }
         public double Radius { get; set; }
 
@@ -59,12 +59,12 @@ namespace Arkanoid
             return ball;
         }
 
-        internal bool HasHit(Sprite sprite)
+        internal bool HasHit(Block bl)
         {
             int Xc = (int)(X + Radius);
             int Yc = (int)(Y + Radius);
-            int Xn = (int)Math.Max(sprite.X, Math.Min(Xc, sprite.X + sprite.Width));
-            int Yn = (int)Math.Max(sprite.Y, Math.Min(Yc, sprite.Y + sprite.Height));
+            int Xn = (int)Math.Max(bl.X, Math.Min(Xc, bl.X + bl.Width));
+            int Yn = (int)Math.Max(bl.Y, Math.Min(Yc, bl.Y + bl.Height));
 
             int Dx = Xn - Xc;
             int Dy = Yn - Yc;
@@ -93,13 +93,12 @@ namespace Arkanoid
             //if ((X + Width >= sprite.X && X + Width <= sprite.X + sprite.Width) && (Y + Height >= sprite.Y && Y + Height <= sprite.Y + sprite.Height)) vx *= -1;
         }
 
-        internal void Move(Canvas canvas, List<Sprite> sprites)
+        internal void Move(Canvas canvas)
         {
             if (X + (2 * Radius) >= canvas.Width || X <= 0)
             {
                 vx *= -1;
             }
-
             else if (Y + (2 * Radius) >= canvas.Height || Y <= 0)
             {
                 vy *= -1;
@@ -107,14 +106,6 @@ namespace Arkanoid
 
             X -= vx;
             Y -= vy;
-
-            foreach (Sprite sprite in sprites)
-            {
-                if (sprite is Block b)
-                {
-                    if (HasHit(b)) break;
-                }
-            }
 
             UpdateElement();
         }

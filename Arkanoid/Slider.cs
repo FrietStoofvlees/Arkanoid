@@ -50,7 +50,6 @@ namespace Arkanoid
             }
 
             UpdateElement();
-
         }
 
         private void MoveLeft()
