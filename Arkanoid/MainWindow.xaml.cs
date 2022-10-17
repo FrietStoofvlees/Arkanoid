@@ -147,8 +147,10 @@ namespace Arkanoid
         private void NewGame()
         {
             isPlaying = false;
+            score = 0;
             CreateElements();
             ShowElements();
+            SetScores();
 
             if (gameTimer == null)
             {
@@ -217,7 +219,12 @@ namespace Arkanoid
 
         private void SetScores()
         {
-            lblScore.Content = Convert.ToString(score);
+            lblScore.Content = score.ToString("D5");
+
+            if (Convert.ToInt32(lblBestScore.Content) < score)
+            {
+                lblBestScore.Content = score.ToString("D5");
+            }
         }
     }
 }
