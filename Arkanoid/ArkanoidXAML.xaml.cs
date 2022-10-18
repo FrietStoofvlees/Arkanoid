@@ -18,9 +18,9 @@ using System.Windows.Threading;
 namespace Arkanoid
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ArkanoidXAML.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ArkanoidXAML : Window
     {
         private Ball ball;
         private Slider slider;
@@ -36,7 +36,7 @@ namespace Arkanoid
         private int lifes = 2;
         private int score = 0;
 
-        public MainWindow()
+        public ArkanoidXAML()
         {
             InitializeComponent();
             NewGame();
@@ -144,6 +144,13 @@ namespace Arkanoid
             sprites.AddRange(collection: new List<Sprite> { ball, slider });
         }
 
+        private void EndGame()
+        {
+            gameTimer.Stop();
+            isPlaying = false;
+            SetScores();
+        }
+
         private void NewGame()
         {
             isPlaying = false;
@@ -171,7 +178,8 @@ namespace Arkanoid
 
                 if (lifes == 0)
                 {
-                    //NewGame(); // TODO: End game
+                    // TODO: End screen?
+                    EndGame();
                 }
                 else
                 {
