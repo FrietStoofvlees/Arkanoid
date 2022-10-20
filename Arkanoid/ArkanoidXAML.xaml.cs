@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -24,6 +25,7 @@ namespace Arkanoid
     {
         private Ball ball;
         private Slider slider;
+
         private DispatcherTimer gameTimer;
         private readonly List<Sprite> sprites = new();
 
@@ -39,7 +41,7 @@ namespace Arkanoid
         public ArkanoidXAML()
         {
             InitializeComponent();
-            NewGame();
+            InitGame();
         }
 
         private void GameTimer_Tick(object sender, EventArgs e)
@@ -80,6 +82,11 @@ namespace Arkanoid
             else
             {
                 // TODO: add press space to play animation?
+                //txtAnimation.Text = "Press SPACE or arrow keys (←,→) to start the game!";
+
+                DoubleAnimation animation = new DoubleAnimation(20, TimeSpan.FromSeconds(5));
+
+                txtAnimation.BeginAnimation(TextBlock.FontSizeProperty, animation);
             }
         }
 
@@ -87,7 +94,7 @@ namespace Arkanoid
         {
             if (!isPlaying)
             {
-                switch (e.Key) 
+                switch (e.Key)
                 {
                     case Key.Space:
                         isPlaying = true;
@@ -103,19 +110,24 @@ namespace Arkanoid
             }
             else
             {
-                 slider.Move(gameCanvas, e);
+                slider.Move(gameCanvas, e);
             }
+        }
+
+        private void BtnMenu_Click(object sender, RoutedEventArgs e)
+        {
+            GameMenuXAML gameMenuXAML = new GameMenuXAML();
+            gameMenuXAML.Show();
         }
 
         private void BtnReset_Click(object sender, RoutedEventArgs e)
         {
-            //gameTimer.Stop();
-            NewGame();
+            ResetGame();
         }
 
         private bool CheckBall()
         {
-            if (ball.Y + ball.Radius >= gameCanvas.Height-deathZone.ActualHeight)
+            if (ball.Y + ball.Radius >= gameCanvas.Height - deathZone.ActualHeight)
             {
                 ball.IsDeath = true;
             }
@@ -151,7 +163,20 @@ namespace Arkanoid
             SetScores();
         }
 
-        private void NewGame()
+        private void InitGame()
+        {
+            CreateElements();
+            ShowElements();
+
+            gameTimer = new DispatcherTimer(DispatcherPriority.Normal);
+            gameTimer.Tick += GameTimer_Tick;
+            gameTimer.Interval = TimeSpan.FromMilliseconds(25);
+
+            gameTimer.Start();
+            gameCanvas.Focus();
+        }
+
+        private void ResetGame()
         {
             isPlaying = false;
             score = 0;
@@ -159,33 +184,24 @@ namespace Arkanoid
             ShowElements();
             SetScores();
 
-            if (gameTimer == null)
-            {
-                gameTimer = new DispatcherTimer(DispatcherPriority.Normal);
-                gameTimer.Tick += GameTimer_Tick;
-                gameTimer.Interval = TimeSpan.FromMilliseconds(25);
-            }
             gameTimer.Start();
             gameCanvas.Focus();
         }
 
         private void GameOver()
         {
-            if (ball.IsDeath)
-            {
-                isPlaying = false;
-                lifes--;
+            isPlaying = false;
+            lifes--;
 
-                if (lifes == 0)
-                {
-                    // TODO: End screen?
-                    EndGame();
-                }
-                else
-                {
-                    slider.Reset();
-                    ball.Reset();
-                }
+            if (lifes == 0)
+            {
+                // TODO: End screen?
+                EndGame();
+            }
+            else
+            {
+                slider.Reset();
+                ball.Reset();
             }
         }
 
