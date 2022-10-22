@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Arkanoid.Models;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
@@ -25,8 +28,13 @@ namespace Arkanoid
     {
         private Ball ball;
         private Slider slider;
+        private ScoreModel scoreModel = new();
+        
 
         private DispatcherTimer gameTimer;
+        private Stopwatch stopwatch;
+        private int fontIncr = 5;
+
         private readonly List<Sprite> sprites = new();
 
         private bool isPlaying;
@@ -36,11 +44,12 @@ namespace Arkanoid
         private readonly int nBlocks = 13;
         private readonly double radius = 10;
         private int lifes = 2;
-        private int score = 0;
 
         public ArkanoidXAML()
         {
             InitializeComponent();
+            lblScore.DataContext = scoreModel;
+            lblBestScore.DataContext = scoreModel;
             InitGame();
         }
 
@@ -81,12 +90,20 @@ namespace Arkanoid
             }
             else
             {
-                // TODO: add press space to play animation?
-                //txtAnimation.Text = "Press SPACE or arrow keys (←,→) to start the game!";
-
-                DoubleAnimation animation = new DoubleAnimation(20, TimeSpan.FromSeconds(5));
-
-                txtAnimation.BeginAnimation(TextBlock.FontSizeProperty, animation);
+                if (!stopwatch.IsRunning)
+                {
+                    stopwatch.Start();
+                    txtAnimation.BeginAnimation(TextBlock.FontSizeProperty, new DoubleAnimation() {
+                        By = fontIncr,
+                        Duration = TimeSpan.FromSeconds(2.5),
+                        FillBehavior = FillBehavior.HoldEnd
+                    });
+                    fontIncr *= -1;
+                }
+                else if (stopwatch.Elapsed.TotalSeconds >= 2.5)
+                {
+                    stopwatch.Reset();
+                }
             }
         }
 
@@ -97,11 +114,11 @@ namespace Arkanoid
                 switch (e.Key)
                 {
                     case Key.Space:
-                        isPlaying = true;
+                        StartGame();
                         break;
                     case Key.Left:
                     case Key.Right:
-                        isPlaying = true;
+                        StartGame();
                         slider.Move(gameCanvas, e);
                         break;
                     default:
@@ -116,8 +133,9 @@ namespace Arkanoid
 
         private void BtnMenu_Click(object sender, RoutedEventArgs e)
         {
-            GameMenuXAML gameMenuXAML = new GameMenuXAML();
+            GameMenuXAML gameMenuXAML = new();
             gameMenuXAML.Show();
+            //TODO: switching menu's in same window
         }
 
         private void BtnReset_Click(object sender, RoutedEventArgs e)
@@ -156,33 +174,41 @@ namespace Arkanoid
             sprites.AddRange(collection: new List<Sprite> { ball, slider });
         }
 
-        private void EndGame()
-        {
-            gameTimer.Stop();
-            isPlaying = false;
-            SetScores();
-        }
-
         private void InitGame()
         {
             CreateElements();
             ShowElements();
 
-            gameTimer = new DispatcherTimer(DispatcherPriority.Normal);
+            gameTimer = new(DispatcherPriority.Normal);
             gameTimer.Tick += GameTimer_Tick;
             gameTimer.Interval = TimeSpan.FromMilliseconds(25);
+
+            stopwatch = new();
 
             gameTimer.Start();
             gameCanvas.Focus();
         }
 
+        private void StartGame()
+        {
+            isPlaying = true;
+            txtAnimation.Visibility = Visibility.Collapsed;
+            stopwatch.Reset();
+        }
+
+        private void EndGame()
+        {
+            gameTimer.Stop();
+            isPlaying = false;
+        }
+
         private void ResetGame()
         {
             isPlaying = false;
-            score = 0;
+            txtAnimation.Visibility = Visibility.Visible;
+            scoreModel.Score = 0;
             CreateElements();
             ShowElements();
-            SetScores();
 
             gameTimer.Start();
             gameCanvas.Focus();
@@ -237,17 +263,17 @@ namespace Arkanoid
 
         private void AddScore(int score)
         {
-            this.score += score;
-            SetScores();
+            scoreModel.Score += score;
         }
 
+        [Obsolete("Scores are binded")]
         private void SetScores()
         {
-            lblScore.Content = score.ToString("D5");
+            lblScore.Content = scoreModel.Score.ToString("D5");
 
-            if (Convert.ToInt32(lblBestScore.Content) < score)
+            if (Convert.ToInt32(lblBestScore.Content) < scoreModel.Score)
             {
-                lblBestScore.Content = score.ToString("D5");
+                lblBestScore.Content = scoreModel.Score.ToString("D5");
             }
         }
     }
