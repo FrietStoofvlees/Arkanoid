@@ -11,9 +11,9 @@ using System.Windows.Media.Converters;
 using System.Windows.Shapes;
 using System.Xml;
 
-namespace Arkanoid
+namespace Arkanoid.Models
 {
-    internal class Ball : Sprite
+    internal class BallModel : SpriteModel
     {
         private readonly Ellipse ball;
         private double vx = 0;
@@ -23,7 +23,7 @@ namespace Arkanoid
         private readonly double startX;
         private readonly double startY;
 
-        public Ball(double x, double y, double radius)
+        public BallModel(double x, double y, double radius)
         {
             X = x;
             Y = y;
@@ -53,13 +53,9 @@ namespace Arkanoid
         public int Damage { get => damage; set => damage = value; }
         public bool IsDeath { get; set; }
         public double Radius { get; set; }
+        public Ellipse Ball => ball;
 
-        public Ellipse GetBall()
-        {
-            return ball;
-        }
-
-        internal bool HasHit(Block bl)
+        internal bool HasHit(BlockModel bl)
         {
             int Xc = (int)(X + Radius);
             int Yc = (int)(Y + Radius);

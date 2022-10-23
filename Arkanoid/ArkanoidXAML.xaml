@@ -8,7 +8,7 @@
         Title="Arkanoid" ResizeMode="NoResize" SizeToContent="WidthAndHeight" KeyDown="Window_KeyDown">
     <Grid MinHeight="450" MinWidth="800" MaxHeight="450" MaxWidth="800">
         <Label Content="Score:" HorizontalAlignment="Left" Margin="50,2,0,0" VerticalAlignment="Top"/>
-        <Label Name="lblScore" Content="{Binding Score}" HorizontalAlignment="Left" Margin="100,2,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblScore" Content="{Binding Score}" HorizontalAlignment="Left" Margin="100,2,0,0" VerticalAlignment="Top"/>
         <Button x:Name="btnMenu" Content="Menu" Margin="325,5,405,425" Width="70" Height="20" FontWeight="Black" Click="BtnMenu_Click"/>
         <Button x:Name="btnReset" Content="Reset" Margin="405,5,325,425" Width="70" Height="20" FontWeight="Black" Click="BtnReset_Click"/>
         <Label Content="Best Score:" HorizontalAlignment="Right" Margin="0,2,100,0" VerticalAlignment="Top"/>
@@ -25,6 +25,6 @@
             </Rectangle>
         </Canvas>
         <Border BorderBrush="Black" BorderThickness="2.5" Margin="10,30,10,10"/>
-        <TextBlock x:Name="txtAnimation" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,225,0,0" TextWrapping="NoWrap" Text="Press SPACE or arrow keys (←,→) to start the game!" FontSize="15" FontWeight="ExtraBold"/>
+        <TextBlock x:Name="txtAnimation" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,225,0,0" TextWrapping="NoWrap" Text="Press SPACE or arrow keys (←,→) to start the game!" FontSize="15" FontWeight="ExtraBold" />
     </Grid>
 </Window>

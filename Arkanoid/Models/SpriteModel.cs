@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Arkanoid
+namespace Arkanoid.Models
 {
-    internal abstract class Sprite
+    internal abstract class SpriteModel
     {
         public double X { get; set; }
         public double Y { get; set; }

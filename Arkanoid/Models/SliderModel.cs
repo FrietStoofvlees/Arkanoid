@@ -9,23 +9,23 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Arkanoid
+namespace Arkanoid.Models
 {
-    internal class Slider : Block
+    internal class SliderModel : BlockModel
     {
         private int speed = 10;
         private readonly double startX;
         private readonly double startY;
 
-		public Slider(double x, double y, double width, double height) : base(x, y, width, height, Colors.Black)
-		{
+        public SliderModel(double x, double y, double width, double height) : base(x, y, width, height, Colors.Black)
+        {
             startX = x;
             startY = y;
             rect.RadiusX = 5;
             rect.RadiusY = 5;
 
             UpdateElement();
-		}
+        }
 
         public int Speed { get => speed; set => speed = value; }
 
@@ -40,7 +40,7 @@ namespace Arkanoid
                     }
                     break;
                 case Key.Right:
-                    if (X + Speed <= ((int)canvas.Width - Width))
+                    if (X + Speed <= (int)canvas.Width - Width)
                     {
                         MoveRight();
                     }

@@ -8,15 +8,15 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Arkanoid
+namespace Arkanoid.Models
 {
-    internal class Block : Sprite
+    internal class BlockModel : SpriteModel
     {
         protected Rectangle rect;
 
         private int health = 1;
 
-        public Block(double x, double y, double width, double height, Color color)
+        public BlockModel(double x, double y, double width, double height, Color color)
         {
             X = x;
             Y = y;
@@ -34,10 +34,7 @@ namespace Arkanoid
             };
         }
 
-        public Rectangle GetBlock()
-        {
-            return rect;
-        }
+        public Rectangle Block => rect;
         public int Bonus { get; } = 50;
         public int Score { get; } = 10;
 
