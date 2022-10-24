@@ -17,6 +17,5 @@ namespace Arkanoid.Models
         public double Height { get; set; }
 
         internal virtual void Reset() { }
-        internal virtual void UpdateElement() { }
     }
 }

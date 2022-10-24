@@ -1,4 +1,5 @@
 ﻿using Arkanoid.Models;
+using Arkanoid.Views;
 using System;
 using System.Diagnostics;
 using System.Windows;
@@ -15,6 +16,7 @@ namespace Arkanoid
     public partial class ArkanoidXAML : Window
     {
         private readonly ArkanoidModel arkanoidModel;
+        private readonly ArkanoidView arkanoidView;
 
         private DispatcherTimer gameTimer;
         private Stopwatch stopwatch;
@@ -24,6 +26,8 @@ namespace Arkanoid
         {
             InitializeComponent();
             arkanoidModel = new(gameCanvas, deathZone);
+            arkanoidView = new(arkanoidModel);
+
             lblScore.DataContext = arkanoidModel.ScoreModel;
             lblBestScore.DataContext = arkanoidModel.ScoreModel;
             InitGame();
@@ -35,7 +39,7 @@ namespace Arkanoid
             {
                 if (arkanoidModel.GameOver()) EndGame();
             }
-            else
+            else if (txtAnimation.Visibility == Visibility.Visible)
             {
                 if (!stopwatch.IsRunning)
                 {
@@ -52,6 +56,7 @@ namespace Arkanoid
                     stopwatch.Reset();
                 }
             }
+            arkanoidView.Update();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -76,6 +81,7 @@ namespace Arkanoid
             {
                 arkanoidModel.MoveSlider(e);
             }
+            arkanoidView.Update();
         }
 
         private void BtnMenu_Click(object sender, RoutedEventArgs e)
@@ -118,6 +124,7 @@ namespace Arkanoid
         private void ResetGame()
         {
             arkanoidModel.Reset();
+            arkanoidView.Reset();
             txtAnimation.Visibility = Visibility.Visible;
 
             gameTimer.Start();

@@ -13,7 +13,7 @@ namespace Arkanoid.Models
 {
     internal class ArkanoidModel
     {
-        private readonly List<SpriteModel> sprites = new();
+        private readonly List<SpriteModel> models = new();
         private readonly Canvas gameCanvas;
         private readonly Rectangle deathZone;
         private readonly int blockWidth = 50;
@@ -30,9 +30,12 @@ namespace Arkanoid.Models
             CreateElements();
         }
 
+        public List<SpriteModel> Models => models;
         public BallModel BallModel { get; private set; }
         public ScoreModel ScoreModel { get; } = new();
         public SliderModel SliderModel { get; private set; }
+        public Canvas GameCanvas => gameCanvas;
+        public Rectangle DeathZone => deathZone;
         public bool IsBallDeath
         {
             get
@@ -51,7 +54,7 @@ namespace Arkanoid.Models
 
         internal void CreateElements()
         {
-            sprites.Clear();
+            models.Clear();
 
             // TODO: add Method from arkanoidLevels.cs to create level
             int startPos = (((int)gameCanvas.Width - (nBlocks * blockWidth)) / 2) - (nBlocks - 1);
@@ -61,47 +64,45 @@ namespace Arkanoid.Models
                 for (int j = 0; j < 4; j++)
                 {
                     BlockModel block = new(x: startPos + (blockWidth * i) + (blockSpacing * i), y: blockHeight + (blockHeight * j) + (blockSpacing * j), width: blockWidth, height: blockHeight, color: Colors.Red);
-                    sprites.Add(block);
+                    models.Add(block);
                 }
             }
 
             BallModel = new BallModel(x: gameCanvas.Width / 2 - radius, y: gameCanvas.Height * 2 / 3 - radius, radius: radius);
             SliderModel = new SliderModel(x: gameCanvas.Width / 2 - blockWidth / 2, y: gameCanvas.Height * 0.85, width: blockWidth, height: 7.5);
 
-            sprites.AddRange(collection: new List<SpriteModel> { BallModel, SliderModel });
-
-            ShowElements();
+            models.AddRange(collection: new List<SpriteModel> { BallModel, SliderModel });
         }
 
-        internal void RemoveElement(BallModel b)
-        {
-            sprites.Remove(b);
-            gameCanvas.Children.Remove(b.Ball);
-        }
+        //internal void RemoveElement(BallModel b)
+        //{
+        //    models.Remove(b);
+        //    gameCanvas.Children.Remove(b.Ball);
+        //}
 
-        private void RemoveElement(BlockModel bl)
-        {
-            sprites.Remove(bl);
-            gameCanvas.Children.Remove(bl.Block);
-        }
+        //private void RemoveElement(BlockModel bl)
+        //{
+        //    models.Remove(bl);
+        //    gameCanvas.Children.Remove(bl.Block);
+        //}
 
-        internal void ShowElements()
-        {
-            gameCanvas.Children.Clear();
-            gameCanvas.Children.Add(deathZone);
+        //internal void ShowElements()
+        //{
+        //    gameCanvas.Children.Clear();
+        //    gameCanvas.Children.Add(deathZone);
 
-            foreach (SpriteModel s in sprites)
-            {
-                if (s is BallModel b)
-                {
-                    gameCanvas.Children.Add(b.Ball);
-                }
-                else if (s is BlockModel bl)
-                {
-                    gameCanvas.Children.Add(bl.Block);
-                }
-            }
-        }
+        //    foreach (SpriteModel s in models)
+        //    {
+        //        if (s is BallModel b)
+        //        {
+        //            gameCanvas.Children.Add(b.Ball);
+        //        }
+        //        else if (s is BlockModel bl)
+        //        {
+        //            gameCanvas.Children.Add(bl.Block);
+        //        }
+        //    }
+        //}
 
         internal bool GameOver()
         {
@@ -137,7 +138,7 @@ namespace Arkanoid.Models
             {
                 BallModel.Move(gameCanvas);
 
-                foreach (SpriteModel s in sprites)
+                foreach (SpriteModel s in models.ToList())
                 {
                     if (s is BallModel) continue;
                     else if (s is SliderModel sl)
@@ -150,7 +151,7 @@ namespace Arkanoid.Models
                         if (bl.IsBroken(BallModel.Damage))
                         {
                             AddScore(bl.Bonus);
-                            RemoveElement(bl);
+                            models.Remove(bl);
                             break;
                         }
                         AddScore(bl.Score);
@@ -159,6 +160,7 @@ namespace Arkanoid.Models
                 }
             }
         }
+
         internal void Reset()
         {
             IsPlaying = false;

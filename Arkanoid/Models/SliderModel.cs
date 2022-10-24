@@ -21,13 +21,11 @@ namespace Arkanoid.Models
         {
             startX = x;
             startY = y;
-            rect.RadiusX = 5;
-            rect.RadiusY = 5;
-
-            UpdateElement();
         }
 
         public int Speed { get => speed; set => speed = value; }
+        public double StartX => startX;
+        public double StartY => startY;
 
         internal void Move(Canvas canvas, KeyEventArgs e)
         {
@@ -48,8 +46,6 @@ namespace Arkanoid.Models
                 default:
                     break;
             }
-
-            UpdateElement();
         }
 
         private void MoveLeft()
@@ -66,14 +62,6 @@ namespace Arkanoid.Models
         {
             X = startX;
             Y = startY;
-            UpdateElement();
-        }
-
-        internal override void UpdateElement()
-        {
-            rect.Margin = new Thickness(X, Y, 0, 0);
-            rect.Width = Width;
-            rect.Height = Height;
         }
     }
 }

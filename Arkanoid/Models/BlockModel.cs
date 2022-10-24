@@ -10,10 +10,8 @@ using System.Windows.Shapes;
 
 namespace Arkanoid.Models
 {
-    internal class BlockModel : SpriteModel
+    internal class BlockModel : SpriteModel, IDeletable
     {
-        protected Rectangle rect;
-
         private int health = 1;
 
         public BlockModel(double x, double y, double width, double height, Color color)
@@ -22,27 +20,22 @@ namespace Arkanoid.Models
             Y = y;
             Width = width;
             Height = height;
-
-            rect = new Rectangle
-            {
-                Width = Width,
-                Height = Height,
-                Stroke = new SolidColorBrush(Colors.Black),
-                StrokeThickness = 3.5,
-                Fill = new SolidColorBrush(color),
-                Margin = new Thickness(X, Y, 0, 0),
-            };
+            Color = color;
+            IsDeletable = false;
         }
 
-        public Rectangle Block => rect;
         public int Bonus { get; } = 50;
+        public Color Color { get; set; }
         public int Score { get; } = 10;
+
+        public bool IsDeletable { get; private set; }
 
         internal bool IsBroken(int damage)
         {
             health -= damage;
             if (health <= 0)
             {
+                IsDeletable = true;
                 return true;
             }
             return false;

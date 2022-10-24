@@ -13,9 +13,8 @@ using System.Xml;
 
 namespace Arkanoid.Models
 {
-    internal class BallModel : SpriteModel
+    internal class BallModel : SpriteModel, IDeletable
     {
-        private readonly Ellipse ball;
         private double vx = 0;
         private double vy = 4.0;
         private int damage = 1;
@@ -30,30 +29,18 @@ namespace Arkanoid.Models
             startX = x;
             startY = y;
             Radius = radius;
-            //X = canvas.ActualWidth / 2 - Radius;
-            //Y = canvas.ActualHeight * 2 / 3 - Radius;
             
             Width = 2 * Radius;
             Height = Width;
             IsDeath = false;
-
-            ball = new Ellipse()
-            {
-                Width = Width,
-                Height = Height,
-                Stroke = new SolidColorBrush(Colors.Black),
-                Fill = new SolidColorBrush(Colors.Black),
-                Margin = new Thickness(X, Y, 0, 0)
-            };
-
-            UpdateElement();
         }
 
         public double Bounce { get => bounce; set => bounce = value; }
         public int Damage { get => damage; set => damage = value; }
         public bool IsDeath { get; set; }
         public double Radius { get; set; }
-        public Ellipse Ball => ball;
+
+        public bool IsDeletable => IsDeath;
 
         internal bool HasHit(BlockModel bl)
         {
@@ -102,8 +89,6 @@ namespace Arkanoid.Models
 
             X -= vx;
             Y -= vy;
-
-            UpdateElement();
         }
 
         internal override void Reset()
@@ -113,14 +98,6 @@ namespace Arkanoid.Models
             X = startX;
             Y = startY;
             IsDeath = false;
-            UpdateElement();
-        }
-
-        internal override void UpdateElement()
-        {
-            ball.Margin = new Thickness(X, Y, 0, 0);
-            ball.Width = Width;
-            ball.Height = Height;
         }
     }
 }
