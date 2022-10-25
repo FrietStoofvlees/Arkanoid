@@ -2,12 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Arkanoid.Views
 {
@@ -18,6 +23,7 @@ namespace Arkanoid.Views
         public ArkanoidView(ArkanoidModel arkanoidModel) 
         {
             ArkanoidModel = arkanoidModel;
+            CreateLifes();
             AddViews();
         }
 
@@ -28,7 +34,6 @@ namespace Arkanoid.Views
             BallView ballView = new(ballModel);
             views.Add(ballView);
             ArkanoidModel.GameCanvas.Children.Add(ballView.Element);
-
         }
 
         private void AddSlider(SliderModel sliderModel)
@@ -40,23 +45,44 @@ namespace Arkanoid.Views
 
         private void AddViews()
         {
-            foreach (SpriteModel spriteModel in ArkanoidModel.Models)
+            foreach (SpriteModel spriteModel in ArkanoidModel.Blocks)
             {
-                
                 if (spriteModel.GetType() == typeof(BlockModel))
                 {
                     BlockView blockView = new((BlockModel)spriteModel);
                     views.Add(blockView);
                     ArkanoidModel.GameCanvas.Children.Add(blockView.Element);
                 }
-                else if (spriteModel is BallModel ballModel)
+            }
+            AddBall(ArkanoidModel.BallModel);
+            AddSlider(ArkanoidModel.SliderModel);
+        }
+
+        private void CreateLifes()
+        {
+            foreach (Image image in ArkanoidModel.GameCanvas.Children.OfType<Image>().ToList())
+            {
+                ArkanoidModel.GameCanvas.Children.Remove(image);
+            }
+            for (int i = 0; i < ArkanoidModel.Lifes; i++)
+            {
+                Image heartImage = new()
                 {
-                    AddBall(ballModel);
-                }
-                else if (spriteModel is SliderModel sliderModel)
-                {
-                    AddSlider(sliderModel);
-                }
+                    Width = 20,
+                    Height = 18,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Margin = new Thickness(10, 10+22*i, 0, 0),
+                };
+
+                BitmapImage bitmap = new();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(@"Assets/heart.png", UriKind.Relative);
+                bitmap.EndInit();
+
+                heartImage.Source = bitmap;
+
+                ArkanoidModel.GameCanvas.Children.Add(heartImage);
             }
         }
 
@@ -71,6 +97,7 @@ namespace Arkanoid.Views
                     views.Remove(spriteView);
                 }
             }
+            CreateLifes();
         }
 
         internal void Reset()

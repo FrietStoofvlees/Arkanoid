@@ -2,10 +2,12 @@
 using Arkanoid.Views;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace Arkanoid
@@ -26,6 +28,10 @@ namespace Arkanoid
         {
             InitializeComponent();
             arkanoidModel = new(gameCanvas, deathZone);
+            if (File.Exists(path: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "data.json")))
+            {
+                arkanoidModel.LoadGame();
+            }
             arkanoidView = new(arkanoidModel);
 
             lblScore.DataContext = arkanoidModel.ScoreModel;
@@ -87,8 +93,8 @@ namespace Arkanoid
         private void BtnMenu_Click(object sender, RoutedEventArgs e)
         {
             EndGame();
-            GameMenuXAML gameMenuXAML = new();
-            gameMenuXAML.Show();
+            //GameMenuXAML gameMenuXAML = new();
+            //gameMenuXAML.Show();
             //TODO: switching menu's in same window
         }
 
@@ -118,6 +124,7 @@ namespace Arkanoid
 
         private void EndGame()
         {
+            arkanoidModel.SaveGame();
             gameTimer.Stop();
         }
 
@@ -125,6 +132,7 @@ namespace Arkanoid
         {
             arkanoidModel.Reset();
             arkanoidView.Reset();
+
             txtAnimation.Visibility = Visibility.Visible;
 
             gameTimer.Start();

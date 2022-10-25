@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Arkanoid"
         mc:Ignorable="d"
         Title="Arkanoid" ResizeMode="NoResize" SizeToContent="WidthAndHeight" KeyDown="Window_KeyDown">
-    <Grid MinHeight="450" MinWidth="800" MaxHeight="450" MaxWidth="800">
+    <Grid x:Name="grdGrid" MinHeight="450" MinWidth="800" MaxHeight="450" MaxWidth="800">
         <Label Content="Score:" HorizontalAlignment="Left" Margin="50,2,0,0" VerticalAlignment="Top"/>
         <Label x:Name="lblScore" Content="{Binding Score}" HorizontalAlignment="Left" Margin="100,2,0,0" VerticalAlignment="Top"/>
         <Button x:Name="btnMenu" Content="Menu" Margin="325,5,405,425" Width="70" Height="20" FontWeight="Black" Click="BtnMenu_Click"/>
@@ -14,7 +14,7 @@
         <Label Content="Best Score:" HorizontalAlignment="Right" Margin="0,2,100,0" VerticalAlignment="Top"/>
         <Label x:Name="lblBestScore" Content="{Binding BestScore}" HorizontalAlignment="Right" Margin="0,2,50,0" VerticalAlignment="Top"/>
 
-        <Canvas x:Name="gameCanvas" Width="780" Height="410" Margin="10,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="LavenderBlush" Focusable="True" FocusVisualStyle="{x:Null}" ClipToBounds="true">
+        <Canvas x:Name="gameCanvas" Width="780" Height="410" Margin="10,30,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="LavenderBlush" Focusable="True" FocusVisualStyle="{x:Null}" ClipToBounds="True">
             <Rectangle x:Name="deathZone" Height="30" Canvas.Top="380" Width="780" HorizontalAlignment="Center" VerticalAlignment="Top" >
                 <Rectangle.Fill>
                     <LinearGradientBrush EndPoint="0.5,1.0" StartPoint="0.5,0.1">
