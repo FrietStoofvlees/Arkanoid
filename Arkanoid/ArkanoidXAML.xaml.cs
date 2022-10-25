@@ -19,6 +19,7 @@ namespace Arkanoid
     {
         private readonly ArkanoidModel arkanoidModel;
         private readonly ArkanoidView arkanoidView;
+        private readonly IArkanoidRepository arkanoidRepository = new ArkanoidFileRepository();
 
         private DispatcherTimer gameTimer;
         private Stopwatch stopwatch;
@@ -28,14 +29,9 @@ namespace Arkanoid
         {
             InitializeComponent();
             arkanoidModel = new(gameCanvas, deathZone);
-            if (File.Exists(path: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "data.json")))
-            {
-                arkanoidModel.LoadGame();
-            }
+            arkanoidRepository.LoadGame(arkanoidModel);
             arkanoidView = new(arkanoidModel);
-
-            lblScore.DataContext = arkanoidModel.ScoreModel;
-            lblBestScore.DataContext = arkanoidModel.ScoreModel;
+                        
             InitGame();
         }
 
@@ -105,6 +101,9 @@ namespace Arkanoid
 
         private void InitGame()
         {
+            lblScore.DataContext = arkanoidModel.ScoreModel;
+            lblBestScore.DataContext = arkanoidModel.ScoreModel;
+
             gameTimer = new(DispatcherPriority.Normal);
             gameTimer.Tick += GameTimer_Tick;
             gameTimer.Interval = TimeSpan.FromMilliseconds(25);
@@ -124,7 +123,7 @@ namespace Arkanoid
 
         private void EndGame()
         {
-            arkanoidModel.SaveGame();
+            arkanoidRepository.SaveGame(arkanoidModel);
             gameTimer.Stop();
         }
 

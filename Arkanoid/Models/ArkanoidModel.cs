@@ -5,13 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Path = System.IO.Path;
 
 namespace Arkanoid.Models
 {
@@ -57,11 +54,11 @@ namespace Arkanoid.Models
             }
         }
         public bool IsPlaying { get; set; }
-        public int Lifes { get; internal set; } = 2;
+        public int Lifes { get; set; } = 2;
 
         private void AddScore(int score) => ScoreModel.Score += score;
 
-        internal void CreateElements()
+        private void CreateElements()
         {
             Blocks.Clear();
 
@@ -80,12 +77,6 @@ namespace Arkanoid.Models
             BallModel = new BallModel(x: gameCanvas.Width / 2 - radius, y: gameCanvas.Height * 2 / 3 - radius, radius: radius);
             SliderModel = new SliderModel(x: gameCanvas.Width / 2 - blockWidth / 2, y: gameCanvas.Height * 0.85, width: blockWidth, height: 7.5);
         }
-
-        //internal void RemoveElement(BallModel b)
-        //{
-        //    models.Remove(b);
-        //    gameCanvas.Children.Remove(b.Ball);
-        //}
 
         private void RemoveElement(BlockModel bl)
         {
@@ -158,40 +149,40 @@ namespace Arkanoid.Models
             CreateElements();
         }
 
-        private void ResetElements()
+        internal void ResetElements()
         {
             BallModel.Reset();
             SliderModel.Reset();
         }
 
-        internal void LoadGame()
-        {
-            string fileName = "data.json";
-            string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string path = Path.Combine(docPath, fileName);
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            string jsonString = File.ReadAllText(path);
-            ArkanoidModel arkanoidModel = JsonSerializer.Deserialize<ArkanoidModel>(jsonString, options)!;
+        //internal void LoadGame()
+        //{
+        //    string fileName = "data.json";
+        //    string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        //    string path = Path.Combine(docPath, fileName);
+        //    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        //    string jsonString = File.ReadAllText(path);
+        //    ArkanoidModel arkanoidModel = JsonSerializer.Deserialize<ArkanoidModel>(jsonString, options)!;
 
-            Blocks.Clear();
-            Blocks.AddRange(arkanoidModel.Blocks);
+        //    Blocks.Clear();
+        //    Blocks.AddRange(arkanoidModel.Blocks);
 
-            BallModel = arkanoidModel.BallModel;
-            SliderModel = arkanoidModel.SliderModel;
-            ScoreModel = arkanoidModel.ScoreModel;
-            Lifes = arkanoidModel.Lifes;
-        }
+        //    BallModel = arkanoidModel.BallModel;
+        //    SliderModel = arkanoidModel.SliderModel;
+        //    ScoreModel = arkanoidModel.ScoreModel;
+        //    Lifes = arkanoidModel.Lifes;
+        //}
 
-        internal void SaveGame()
-        {
-            ResetElements();
+        //internal void SaveGame()
+        //{
+        //    ResetElements();
 
-            string fileName = "data.json";
-            string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string path = Path.Combine(docPath, fileName);
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            string jsonString = JsonSerializer.Serialize(this, options);
-            File.WriteAllText(path, jsonString);
-        }
+        //    string fileName = "data.json";
+        //    string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        //    string path = Path.Combine(docPath, fileName);
+        //    var options = new JsonSerializerOptions { WriteIndented = true };
+        //    string jsonString = JsonSerializer.Serialize(this, options);
+        //    File.WriteAllText(path, jsonString);
+        //}
     }
 }
